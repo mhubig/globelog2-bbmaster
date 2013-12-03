@@ -1,41 +1,49 @@
 ## metadata
-from        ubuntu:12.04
-maintainer  Markus Hubig <mhubig@imko.de>
+FROM        ubuntu:12.04
+MAINTAINER  Markus Hubig <mhubig@imko.de>
 
 ## update & upgrade
-run     echo 'deb http://archive.ubuntu.com/ubuntu precise main universe' > /etc/apt/sources.list
-run     apt-get -y update
-run     apt-get -y upgrade
+RUN     echo 'deb http://archive.ubuntu.com/ubuntu precise main universe' > /etc/apt/sources.list
+RUN     apt-get -y update
+RUN     apt-get -y upgrade
 
 ## install required software
-run     apt-get install -y -q curl
-run     apt-get install -y -q git
-run     apt-get install -y -q wget
-run     apt-get install -y -q gawk
-run     apt-get install -y -q rsync
-run     apt-get install -y -q unzip
-run     apt-get install -y -q texinfo
-run     apt-get install -y -q chrpath
-run     apt-get install -y -q diffstat
-run     apt-get install -y -q python-pip
-run     apt-get install -y -q supervisor
-run     apt-get install -y -q build-essential
+RUN     apt-get install -y -q curl
+RUN     apt-get install -y -q git
+RUN     apt-get install -y -q wget
+RUN     apt-get install -y -q gawk
+RUN     apt-get install -y -q rsync
+RUN     apt-get install -y -q unzip
+RUN     apt-get install -y -q texinfo
+RUN     apt-get install -y -q chrpath
+RUN     apt-get install -y -q diffstat
+RUN     apt-get install -y -q python-pip
+RUN     apt-get install -y -q supervisor
+RUN     apt-get install -y -q build-essential
 
-## setup buildbot slave
-run     pip install buildbot-slave
-run     mkdir -p /data/log
-add     ./slave /data/slave
+## add some folders
+RUN     mkdir -p /var/run/sshd
+RUN     mkdir -p /var/log/supervisor
 
-## setup supervisor
-add     ./supervisor/supervisord.conf /etc/supervisor/supervisord.conf
-add     ./supervisor/conf.d/buildbot.conf /etc/supervisor/conf.d/buildbot.conf
+## set a password
+RUN     echo "root:root" | chpasswd
 
-## environment
-env     BUILDBOT_HOST   $BUILDBOT_HOST
-env     BUILDBOT_PORT   $BUILDBOT_PORT
-env     BUILDBOT_NAME   $BUILDBOT_NAME
-env     BUILDBOT_PASS   $BUILDBOT_PASS
+## setup buildbot master
+RUN     pip install django-dotenv
+RUN     pip install buildbot
+RUN     mkdir -p /data
+ADD     ./master /data/master
+ADD     ./dotenv /data/master/.env
 
-## run command
-volume ["/data"]
-ENTRYPOINT ["/usr/bin/supervisord"]
+## setup supervisor scripts
+ADD     ./supervisord/ /etc/supervisor/conf.d/
+
+## exposed ports & volumes
+VOLUME  ["/data"]
+EXPOSE  22      # SSH
+EXPOSE  9989    # Buildbot
+EXPOSE  8080    # Buildbot Web
+EXPOSE  8011    # Buildbot Hook
+
+## RUN command
+CMD     ["/usr/bin/supervisord", "-n"]
