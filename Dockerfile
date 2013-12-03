@@ -40,12 +40,20 @@ ADD     ./dotenv /data/master/.env
 ## setup supervisor scripts
 ADD     ./supervisord/ /etc/supervisor/conf.d/
 
-## exposed ports & volumes
+## exposed volume
 VOLUME  ["/data"]
-EXPOSE  22      # SSH
-EXPOSE  9989    # Buildbot
-EXPOSE  8080    # Buildbot Web
-EXPOSE  8011    # Buildbot Hook
+
+## expose ssh port
+EXPOSE  22
+
+## expose port for slaves
+EXPOSE  9989
+
+## expose port for webpage
+EXPOSE  8080
+
+## expose port for hook
+EXPOSE  8011
 
 ## RUN command
 CMD     ["/usr/bin/supervisord", "-n"]
