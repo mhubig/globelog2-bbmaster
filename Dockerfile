@@ -40,20 +40,11 @@ ADD     ./dotenv /data/master/.env
 ## setup supervisor scripts
 ADD     ./supervisord/ /etc/supervisor/conf.d/
 
-## exposed volume
+## expose the data volume
 VOLUME  ["/data"]
 
-## expose ssh port
-EXPOSE  22
-
-## expose port for slaves
-EXPOSE  9989
-
-## expose port for webpage
-EXPOSE  8080
-
-## expose port for hook
-EXPOSE  8011
+## expose some ports
+EXPOSE  22 9989 8080 8011
 
 ## RUN command
 CMD     ["/usr/bin/supervisord", "-n"]
