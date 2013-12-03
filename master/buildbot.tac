@@ -33,7 +33,7 @@ except  ImportError:
     pass
 
 ## create the master
-m = BuildMaster(basedir, configfile, umask)
+m = BuildMaster(bbmaster_basedir, bbmaster_configfile, bbmaster_umask)
 m.setServiceParent(application)
 m.log_rotation.rotateLength = bbmaster_rotate_length
 m.log_rotation.maxRotatedFiles = bbmaster_max_rotated_files
