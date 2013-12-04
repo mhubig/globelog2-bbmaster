@@ -37,6 +37,7 @@ RUN     pip install buildbot
 RUN     mkdir -p /data
 ADD     ./master /data/master
 ADD     ./dotenv /data/master/.env
+RUN     buildbot upgrade-master /data/master
 
 ## setup supervisor scripts
 ADD     ./supervisord/ /etc/supervisor/conf.d/
