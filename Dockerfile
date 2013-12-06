@@ -19,31 +19,27 @@ RUN     apt-get install -y -q chrpath
 RUN     apt-get install -y -q diffstat
 RUN     apt-get install -y -q python-dev
 RUN     apt-get install -y -q python-pip
-RUN     apt-get install -y -q supervisor
-RUN     apt-get install -y -q openssh-server
 RUN     apt-get install -y -q build-essential
-
-## add some folders
-RUN     mkdir -p /var/run/sshd
-RUN     mkdir -p /var/log/supervisor
 
 ## set a password
 RUN     echo "root:root" | chpasswd
 
 ## setup buildbot master
 RUN     pip install boto
+RUN     pip install fabric
 RUN     pip install buildbot
 RUN     mkdir -p /data
 ADD     ./master /data/master
+ADD     ./fabfile.py /data
 
 ## setup supervisor scripts
 ADD     ./supervisord/ /etc/supervisor/conf.d/
 
-## expose the data volume
-VOLUME  ["/data"]
-
 ## expose some ports
 EXPOSE  22 9989 8080 8011
 
+## set the workdir
+WORKDIR /data
+
 ## RUN command
-CMD     ["/usr/bin/supervisord", "-n"]
+CMD     ["/usr/local/bin/fab", "run"]
