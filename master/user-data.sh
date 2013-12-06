@@ -1,5 +1,5 @@
 Content-Type: text/x-shellscript
-docker build -t mhubig/globelog2-bbslave {BUILDBOT_REPO}
+docker build -t mhubig/globelog2-bbslave {BUILDSLAVE_REPO}
 docker run -i -t \
     -v /mnt:/data/slave/build \
     -e BUILDBOT_ADDR="{BUILDBOT_ADDR}" \
