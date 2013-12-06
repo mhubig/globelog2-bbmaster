@@ -2,13 +2,8 @@
 # vi: set ft=python :
 
 import os
-import dotenv
-
 from twisted.application import service
 from buildbot.master import BuildMaster
-
-## load the dotenv file
-dotenv.read_dotenv()
 
 ## bbmaster settings
 bbmaster_basedir = os.path.abspath(os.path.dirname(__file__))
