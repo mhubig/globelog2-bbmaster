@@ -31,12 +31,10 @@ RUN     mkdir -p /var/log/supervisor
 RUN     echo "root:root" | chpasswd
 
 ## setup buildbot master
-RUN     pip install django-dotenv
 RUN     pip install boto
 RUN     pip install buildbot
 RUN     mkdir -p /data
 ADD     ./master /data/master
-ADD     ./dotenv /data/master/.env
 RUN     buildbot upgrade-master /data/master
 
 ## setup supervisor scripts
