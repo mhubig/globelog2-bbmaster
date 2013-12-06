@@ -30,7 +30,7 @@ RUN     pip install fabric
 RUN     pip install buildbot
 RUN     mkdir -p /data
 ADD     ./master /data/master
-ADD     ./fabfile.py /data
+ADD     ./fabfile.py /data/
 
 ## setup supervisor scripts
 ADD     ./supervisord/ /etc/supervisor/conf.d/
